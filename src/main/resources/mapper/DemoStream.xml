@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dolphindb.demo.dao.DemoStreamDao" >
+
+    <select id="queryByTimespan" resultType="com.dolphindb.demo.entity.DemoEntity">
+        <![CDATA[
+        select *
+        from DemoStream
+        where time >= #{start} and time <= #{end}
+        ]]>
+    </select>
+
+    <insert id="insert" parameterType="com.dolphindb.demo.entity.DemoEntity">
+        insert into DemoStream values(#{time},#{id},#{f0},#{f1},#{f2},#{f3},#{f4},#{f5},#{f6},#{f7},#{f8},#{f9})
+    </insert>
+</mapper>
