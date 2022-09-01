@@ -1,0 +1,76 @@
+//每次重启服务器都需要执行此脚本
+//登录
+login("admin","123456")
+//分布式库名
+dbPath = "dfs://DemoDB"
+//流表名
+stName = "DemoStream"
+//分区表名
+ptName = "DemoDfs"
+
+//建库函数
+def createDB(dbPath){
+	print('正在初始化数据库' + dbPath)
+	if ( existsDatabase(dbPath) ) {
+		print('当前数据库已存在，加载数据库：' + dbPath)
+		db = database(dbPath)
+		 print('已加载数据库：' + dbPath)
+		return db
+	}
+	else {
+		print('当前数据库不存在，创建数据库：' + dbPath)
+		value = 2010.01.01..2040.12.31
+		db = database(dbPath, VALUE, value,,engine='TSDB')
+		print('已完成创建数据库：'+ dbPath)
+		return db
+	}
+}
+
+//建流表函数
+def createST(stName){
+	if(not defined(stName,SHARED)){
+	            print('共享变量未定义，创建共享表：' + stName)
+	        	print(`正在创建Demo流表)
+		colNames = `time`id`f0`f1`f2`f3`f4`f5`f6`f7`f8`f9
+		colTypes = [DATETIME,LONG,FLOAT,FLOAT,FLOAT,FLOAT,FLOAT,FLOAT,FLOAT,FLOAT,FLOAT,FLOAT]
+		st = streamTable(150000:0, colNames, colTypes)
+		print(`完成创建Demo流表)
+		enableTableShareAndPersistence(table = st, tableName = stName, retentionMinutes  = 10, cacheSize = 100000, preCache=100000 )
+		print('完成创建共享表')
+		return st
+	}
+	else{
+		print('共享变量已存在，加载共享变量：' + stName)
+		return objByName(stName, true)
+	}
+}
+
+//建分区表函数
+def createPT(dbPath,ptName){
+	db = createDB(dbPath)
+	if (existsTable(dbPath, ptName)){
+		print('分区表已存在，加载分区表：' + ptName)
+		pt=loadTable(db,ptName)
+		return pt
+	}
+	else{
+		print('分区表不存在，创建分区表：' + ptName)
+		print(`正在创建Demo分区表)
+		colNames = `time`id`f0`f1`f2`f3`f4`f5`f6`f7`f8`f9
+		colTypes = [DATETIME,LONG,FLOAT,FLOAT,FLOAT,FLOAT,FLOAT,FLOAT,FLOAT,FLOAT,FLOAT,FLOAT]
+		t = table(1:0, colNames, colTypes)
+		pt = db.createPartitionedTable(table = t, tableName = ptName, partitionColumns = `time, sortColumns=`id`time, keepDuplicates=LAST)
+		print('完成创建分区表：' + ptName)
+		return pt
+
+	}
+}
+
+//创建库
+createDB(dbPath)
+//创建流表
+createST(stName)
+//创建分区表
+createPT(dbPath,ptName)
+//订阅流表
+subscribeTable(tableName=stName, actionName=`changetimetype, offset=-1, handler=loadTable(dbPath,ptName), msgAsTable=true)
