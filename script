@@ -33,9 +33,9 @@ def createST(stName){
 	        	print(`正在创建Demo流表)
 		colNames = `time`id`f0`f1`f2`f3`f4`f5`f6`f7`f8`f9
 		colTypes = [DATETIME,LONG,FLOAT,FLOAT,FLOAT,FLOAT,FLOAT,FLOAT,FLOAT,FLOAT,FLOAT,FLOAT]
-		st = streamTable(150000:0, colNames, colTypes)
+		st = streamTable(15000000:0, colNames, colTypes)
 		print(`完成创建Demo流表)
-		enableTableShareAndPersistence(table = st, tableName = stName, retentionMinutes  = 10, cacheSize = 100000, preCache=100000 )
+		enableTableShareAndPersistence(table = st, tableName = stName, retentionMinutes  = 10, cacheSize = 10000000, preCache=10000000 )
 		print('完成创建共享表')
 		return st
 	}
