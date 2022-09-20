@@ -11,10 +11,10 @@ ptName = "DemoDfs"
 //建库函数
 def createDB(dbPath){
 	print('正在初始化数据库' + dbPath)
-	if ( existsDatabase(dbPath) ) {
+	if (existsDatabase(dbPath)) {
 		print('当前数据库已存在，加载数据库：' + dbPath)
 		db = database(dbPath)
-		 print('已加载数据库：' + dbPath)
+		print('已加载数据库：' + dbPath)
 		return db
 	}
 	else {
@@ -29,13 +29,13 @@ def createDB(dbPath){
 //建流表函数
 def createST(stName){
 	if(not defined(stName,SHARED)){
-	            print('共享变量未定义，创建共享表：' + stName)
-	        	print(`正在创建Demo流表)
+	    print('共享变量未定义，创建共享表：' + stName)
+	    print(`正在创建Demo流表)
 		colNames = `time`id`f0`f1`f2`f3`f4`f5`f6`f7`f8`f9
 		colTypes = [DATETIME,LONG,FLOAT,FLOAT,FLOAT,FLOAT,FLOAT,FLOAT,FLOAT,FLOAT,FLOAT,FLOAT]
 		st = streamTable(150000:0, colNames, colTypes)
 		print(`完成创建Demo流表)
-		enableTableShareAndPersistence(table = st, tableName = stName, retentionMinutes  = 10, cacheSize = 100000, preCache=100000 )
+		enableTableShareAndPersistence(table=st, tableName=stName, retentionMinutes=10, cacheSize=100000, preCache=100000 )
 		print('完成创建共享表')
 		return st
 	}
@@ -50,7 +50,7 @@ def createPT(dbPath,ptName){
 	db = createDB(dbPath)
 	if (existsTable(dbPath, ptName)){
 		print('分区表已存在，加载分区表：' + ptName)
-		pt=loadTable(db,ptName)
+		pt = loadTable(db,ptName)
 		return pt
 	}
 	else{
@@ -59,7 +59,7 @@ def createPT(dbPath,ptName){
 		colNames = `time`id`f0`f1`f2`f3`f4`f5`f6`f7`f8`f9
 		colTypes = [DATETIME,LONG,FLOAT,FLOAT,FLOAT,FLOAT,FLOAT,FLOAT,FLOAT,FLOAT,FLOAT,FLOAT]
 		t = table(1:0, colNames, colTypes)
-		pt = db.createPartitionedTable(table = t, tableName = ptName, partitionColumns = `time, sortColumns=`id`time, keepDuplicates=LAST)
+		pt = db.createPartitionedTable(table=t, tableName=ptName, partitionColumns=`time, sortColumns=`id`time, keepDuplicates=LAST)
 		print('完成创建分区表：' + ptName)
 		return pt
 

@@ -32,7 +32,7 @@ SpringBoot 是一个基于 Spring 的快速开发框架，也是 SpringCloud 构
 
 + Postman 9.12.2 测试工具
 
-+ 项目的源码:[DolphinDBJDBCDemo](https://gitlab.com/2449247266wqq/dolphindbjdbcdemo)
++ 项目的源码:[DolphinDBJDBCDemo](https://github.com/dolphindb/DolphindbInSpringBoot)
 
 ## 1. 创建 SpringBoot 项目
 
@@ -154,9 +154,9 @@ SpringBoot 是一个基于 Spring 的快速开发框架，也是 SpringCloud 构
 
 在 DolphinDB 官网下载并运行 DolphinDB GUI。关于 GUI 的下载及使用方法请参考 [部署教程](https://gitee.com/dolphindb/Tutorials_CN/blob/master/standalone_server.md)。
 
-下载 [建库建表脚本](https://gitlab.com/2449247266wqq/dolphindbjdbcdemo/-/blob/master/script)，并将脚本拷贝到 GUI 中运行。有关建库建表的更多内容，可参考 [单节点部署](https://gitee.com/dolphindb/Tutorials_CN/blob/master/hybrid_programming_paradigms.md)。
+下载 [建库建表脚本](script)，并将脚本拷贝到 GUI 中运行。有关建库建表的更多内容，可参考 [单节点部署](https://gitee.com/dolphindb/Tutorials_CN/blob/master/hybrid_programming_paradigms.md)。
 
-在执行脚本之前，需配置流表数据持久化的目录路径（在 DolphinDB/server/dolphindb.cfg 文件中添加 `persistenceDir=D:\Software\DolphinDB\data`，将后面目录路径改为自己的持久化目录路径即可）。当内存中的流数据表的行数超过持久化流表（[enableTableShareAndPersistence](https://www.dolphindb.cn/cn/help/FunctionsandCommands/CommandsReferences/e/enableTableShareAndPersistence.html)）设置值时，系统会将内存中的部分数据持久化到配置的目录中。
+在执行脚本之前，需配置流表数据持久化的目录路径（在 DolphinDB/server/dolphindb.cfg 文件中添加 `persistenceDir=D:\Software\DolphinDB\data`，根据实际情况调整目录即可）。当内存中的流数据表的行数超过持久化流表（[enableTableShareAndPersistence](https://www.dolphindb.cn/cn/help/FunctionsandCommands/CommandsReferences/e/enableTableShareAndPersistence.html)）设置值时，系统会将内存中的部分数据持久化到配置的目录中。
 
 如下图所示，完成数据库的创建。
 
@@ -166,19 +166,19 @@ DolphinDB 还提供其他形式的客户端，详情参考 [DolphinDB 客户端�
 
 建立两个表：
 
-1. 内存中的实时数据表（也就是 DolphinDB 中的流表），用于快速接收实时数据，建表语句中设置内存中最多保留的实时数据的大小不超过 10 万条；
+1. 内存中的实时数据表（也就是 DolphinDB 中的流表），用于快速接收实时数据。建表语句中设置内存中最多保留的实时数据的大小不超过 10 万条；
 
-2. 磁盘上的历史数据表（也就是 DolphinDB 中的分布式表），实时数据表新增的数据会自动、定期写入历史数据表中，历史数据表的大小没有限制。
+2. 磁盘上的历史数据表（也就是 DolphinDB 中的分布式表），实时数据表新增的数据会自动、定期写入历史数据表中。历史数据表的大小没有限制。
 
 这两个表的结构一致，一共 12 个字段，time 表示时间戳，id 为设备唯一编码，其他字段可以是一些采集的物理量（如温度、湿度等数据)。
 
 ![img](image/2_2_02.png?inline=false)
 
-创建两个表的方案，能满足快速写入和实时查询的需要，也能满足大批数据查询的需要，适用于大部分应用场景。
+创建两个表的方案，既能满足快速写入和实时查询的需要，也能满足大批数据查询的需要，适用于大部分应用场景。
 
 ### 2.3 添加 DolphinDB JDBC 依赖
 
-pom 文件中添加 JDBC 依赖并且刷新 Maven
+pom 文件中添加 JDBC 依赖并且刷新 Maven。
 
 ```xml
 <dependency>
@@ -189,7 +189,7 @@ pom 文件中添加 JDBC 依赖并且刷新 Maven
 ```
 ### 2.4 项目配置
 
-然后在 application.properties 中进行数据库相关属性的配置。本文只配了几个必要的配置，其他参数可自行配置，详见 [官方配置文档](https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html)。
+在 application.properties 中进行数据库相关属性的配置。本文只配了几个必要的配置，其他参数可自行配置，参数说明详见 [官方配置文档](https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html)。
 
 ```properties
 server.port=8888
@@ -205,20 +205,20 @@ mybatis.configuration.auto-mapping-behavior=full
 
 ![img](image/2_4_01.png?inline=false)
 
-完成前面的步骤后，下面就可以进行具体代码的编写了。
+完成前面的步骤后，就可以编写具体代码。
 
 ## 3. 在 IDEA 中编写代码
 
-这部分主要是代码的编写工作，注意在相应的目录下编写代码。
+本节主要是代码的编写工作。需要在相应的目录下编写代码。
 
 ### 3.1 entity 目录
 
-DemoEntity 对应数据库中 Demo 表的实体类（流表和分区表都对应这个类）
+DemoEntity 对应数据库中 Demo 表的实体类，即为本案例中创建的流表和分区表所对应的类。
 
 ```java
 @Data
 public class DemoEntity {
-    @JSONField(name="time",format = "yyyy-MM-dd HH:mm:ss")
+    @JSONField(name="time", format = "yyyy-MM-dd HH:mm:ss")
     private Date time;
     @JSONField(name="id")
     private long id;
@@ -282,7 +282,7 @@ public interface DemoStreamService {
     List<DemoEntity> queryByTimespan(Date start, Date end);
 }
 ```
-定义分区表的业务层实现：DemoDfsService
+定义分区表的业务层实现：DemoDfsServiceImpl
 
 ```java
 @Service
@@ -298,7 +298,7 @@ public class DemoDfsServiceImpl implements DemoDfsService {
 }
 ```
 
-定义流表的业务层实现类：DemoStreamService
+定义流表的业务层实现类：DemoStreamServiceImpl
 
 ```java
 @Service
@@ -321,7 +321,7 @@ public class DemoStreamServiceImpl implements DemoStreamService {
 
 ### 3.4 dto 目录
 
-定义对外数据传输类：DemoStreamService
+定义对外数据传输类：QueryArg
 
 ```java
 @Data
@@ -369,7 +369,7 @@ public class DemoMqttClient {
 
     private MqttCallback onMessageCallback=new MqttCallback() {
         public void connectionLost(Throwable cause) {
-            // 连接丢失后，一般在这里面进行重连
+            // 连接丢失后，进行重连
             System.out.println("连接断开，可以做重连");
             try {
                 reConnect();
@@ -380,7 +380,7 @@ public class DemoMqttClient {
 
         public void messageArrived(String topic, MqttMessage message) throws Exception {
             try{
-                // 订阅后得到的消息会执行到这里面
+                // 将接收到的信息转换为实体类对象并插入流表
                 List<DemoEntity> demoEntities = JSON.parseArray(new String(message.getPayload()), DemoEntity.class);
                 for(DemoEntity entity : demoEntities){
                     mDemoStreamService.insert(entity);
@@ -517,13 +517,16 @@ DemoStream.xml 描述流表的查询和写入 SQL 实现。
 
 通过 MQTTX 客户端模拟物联网设备，发送实时数据至服务器。
 
-通过 Postman 模拟前端网页调用后端接口，1 - 查询 1 小时内收到的实时数据，2 - 查询 1 年内的历史数据。
+通过 Postman 模拟前端网页调用后端接口，实现以下查询：
+
+* 查询 1 小时内收到的实时数据；
+* 查询 1 年内的历史数据。
 
 ### 5.1 数据说明
 
 本教程只是简单模拟了物联网设备的数据集结构，模拟的数据规模也十分小，仅供参考。
 
-| ** 序号 ** | ** 字段名 ** | ** 字段类型 ** | ** 字段说明 **                    |
+| **序号** | **字段名** | **字段类型** | **字段说明**                    |
 | ------ | ------- | -------- | --------------------------- |
 | 1      | time    | DATE     | 数据采集时间戳                     |
 | 2      | id      | LONG     | 设备唯一标识                      |
@@ -591,7 +594,7 @@ DemoStream.xml 描述流表的查询和写入 SQL 实现。
 
 ### 5.5 查询实时数据
 
-打开 postman，以 post 方式发送请求 (http://localhost:8888/queryStream)，查询一小时内的实时数据，下面是请求的格式
+打开 postman，以 post 方式发送请求 (http://localhost:8888/queryStream)，查询一小时内的实时数据，下面是请求的格式：
 
 ```json
 {
@@ -604,7 +607,7 @@ DemoStream.xml 描述流表的查询和写入 SQL 实现。
 
 ### 5.6 查询历史数据
 
-以 post 方式发送请求 (http://localhost:8888/queryDfs)，查询一年内的历史数据，下面是请求的格式
+以 post 方式发送请求 (http://localhost:8888/queryDfs)，查询一年内的历史数据，下面是请求的格式：
 
 ```json
 {
@@ -618,5 +621,5 @@ DemoStream.xml 描述流表的查询和写入 SQL 实现。
 ## 6. 总结
 
 + DolphinDB 可以很好的支持微服务的应用开发。
-+ DolphinDB SQL 可以兼容 MySQL, PostgreSQL 等部分常见标准 SQL 语句，减少了代码迁移成本。后续 DolphinDB 将支持更多标准 SQL 用法。
++ DolphinDB SQL 可以兼容 MySQL, PostgreSQL 等常见标准 SQL 语句，减少了代码迁移成本。后续 DolphinDB 将支持更多标准 SQL 用法。
 + DolphinDB Java API 性能比 MyBatis 更好。如果用户对性能有要求，建议使用 Java API。
