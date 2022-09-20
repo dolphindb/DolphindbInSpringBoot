@@ -32,7 +32,7 @@ SpringBoot 是一个基于 Spring 的快速开发框架，也是 SpringCloud 构
 
 + Postman 9.12.2 测试工具
 
-+ 项目的源码:[DolphinDBJDBCDemo](https://github.com/dolphindb/DolphindbInSpringBoot)
++ 项目的源码:[DolphinDBJDBCDemo](https://gitee.com/dolphindb/DolphindbInSpringBoot)
 
 ## 1. 创建 SpringBoot 项目
 
@@ -154,7 +154,7 @@ SpringBoot 是一个基于 Spring 的快速开发框架，也是 SpringCloud 构
 
 在 DolphinDB 官网下载并运行 DolphinDB GUI。关于 GUI 的下载及使用方法请参考 [部署教程](https://gitee.com/dolphindb/Tutorials_CN/blob/master/standalone_server.md)。
 
-下载 [建库建表脚本](script)，并将脚本拷贝到 GUI 中运行。有关建库建表的更多内容，可参考 [单节点部署](https://gitee.com/dolphindb/Tutorials_CN/blob/master/hybrid_programming_paradigms.md)。
+下载 [建库建表脚本](script)，并将脚本拷贝到 GUI 中运行。参考 [编程语言介绍](https://gitee.com/dolphindb/Tutorials_CN/blob/master/hybrid_programming_paradigms.md) 了解更多 DolphinDB 编程语言。
 
 在执行脚本之前，需配置流表数据持久化的目录路径（在 DolphinDB/server/dolphindb.cfg 文件中添加 `persistenceDir=D:\Software\DolphinDB\data`，根据实际情况调整目录即可）。当内存中的流数据表的行数超过持久化流表（[enableTableShareAndPersistence](https://www.dolphindb.cn/cn/help/FunctionsandCommands/CommandsReferences/e/enableTableShareAndPersistence.html)）设置值时，系统会将内存中的部分数据持久化到配置的目录中。
 
@@ -594,7 +594,7 @@ DemoStream.xml 描述流表的查询和写入 SQL 实现。
 
 ### 5.5 查询实时数据
 
-打开 postman，以 post 方式发送请求 (http://localhost:8888/queryStream)，查询一小时内的实时数据，下面是请求的格式：
+打开 postman，以 post 方式发送请求 `http://localhost:8888/queryStream`，查询一小时内的实时数据，下面是请求的格式：
 
 ```json
 {
@@ -607,7 +607,7 @@ DemoStream.xml 描述流表的查询和写入 SQL 实现。
 
 ### 5.6 查询历史数据
 
-以 post 方式发送请求 (http://localhost:8888/queryDfs)，查询一年内的历史数据，下面是请求的格式：
+以 post 方式发送请求 `http://localhost:8888/queryDfs`，查询一年内的历史数据，下面是请求的格式：
 
 ```json
 {
