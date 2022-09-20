@@ -156,7 +156,7 @@ SpringBoot 是一个基于 Spring 的快速开发框架，也是 SpringCloud 构
 
 下载 [建库建表脚本](script)，并将脚本拷贝到 GUI 中运行。参考 [编程语言介绍](https://gitee.com/dolphindb/Tutorials_CN/blob/master/hybrid_programming_paradigms.md) 了解更多 DolphinDB 编程语言。
 
-在执行脚本之前，需配置流表数据持久化的目录路径（在 DolphinDB/server/dolphindb.cfg 文件中添加 `persistenceDir=D:\Software\DolphinDB\data`，根据实际情况调整目录即可）。当内存中的流数据表的行数超过持久化流表（[enableTableShareAndPersistence](https://www.dolphindb.cn/cn/help/FunctionsandCommands/CommandsReferences/e/enableTableShareAndPersistence.html)）设置值时，系统会将内存中的部分数据持久化到配置的目录中。
+在执行脚本之前，需配置流表数据持久化的目录路径（在 DolphinDB/server/dolphindb.cfg 文件中添加 `persistenceDir=/home/Software/DolphinDB/data`，根据实际情况调整目录即可）。当内存中的流数据表的行数超过持久化流表（[enableTableShareAndPersistence](https://www.dolphindb.cn/cn/help/FunctionsandCommands/CommandsReferences/e/enableTableShareAndPersistence.html)）设置值时，系统会将内存中的部分数据持久化到配置的目录中。
 
 如下图所示，完成数据库的创建。
 
@@ -189,7 +189,7 @@ pom 文件中添加 JDBC 依赖并且刷新 Maven。
 ```
 ### 2.4 项目配置
 
-在 application.properties 中进行数据库相关属性的配置。本文只配了几个必要的配置，其他参数可自行配置，参数说明详见 [官方配置文档](https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html)。
+在 application.properties 中进行数据库相关属性的配置。本文只配了几个必要的配置，其他参数可自行配置，参数说明详见 [官方配置文档](https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html)。请注意，以下参数中 `spring.datasource.url` 请调整为用户实际使用的地址。
 
 ```properties
 server.port=8888
@@ -526,20 +526,77 @@ DemoStream.xml 描述流表的查询和写入 SQL 实现。
 
 本教程只是简单模拟了物联网设备的数据集结构，模拟的数据规模也十分小，仅供参考。
 
-| **序号** | **字段名** | **字段类型** | **字段说明**                    |
-| ------ | ------- | -------- | --------------------------- |
-| 1      | time    | DATE     | 数据采集时间戳                     |
-| 2      | id      | LONG     | 设备唯一标识                      |
-| 3      | f0      | FLOAT    | 这些字段可以是一些采集的物理量（如温度、湿度等数据)。 |
-| 4      | f1      | FLOAT    |                             |
-| 5      | f2      | FLOAT    |                             |
-| 6      | f3      | FLOAT    |                             |
-| 7      | f4      | FLOAT    |                             |
-| 8      | f5      | FLOAT    |                             |
-| 9      | f6      | FLOAT    |                             |
-| 10     | f7      | FLOAT    |                             |
-| 11     | f8      | FLOAT    |                             |
-| 12     | f9      | FLOAT    |                             |
+<table>
+   <tr>
+      <td><b>序号</b></td>
+      <td><b>字段名</b></td>
+      <td><b>字段类型</b></td>
+      <td><b>字段说明</b></td>
+   </tr>
+   <tr>
+      <td>1</td>
+      <td>time</td>
+      <td>DATE</td>
+      <td>数据采集时间戳</td>
+   </tr>
+   <tr>
+      <td>2</td>
+      <td>id</td>
+      <td>LONG</td>
+      <td>设备唯一标识</td>
+   </tr>
+   <tr>
+      <td>3</td>
+      <td>f0</td>
+      <td>FLOAT</td>
+      <td rowspan="10">这些字段可以是一些采集的物理量（如温度、湿度等数据)。</td>
+   </tr>
+   <tr>
+      <td>4</td>
+      <td>f1</td>
+      <td>FLOAT</td>
+   </tr>
+   <tr>
+      <td>5</td>
+      <td>f2</td>
+      <td>FLOAT</td>
+   </tr>
+   <tr>
+      <td>6</td>
+      <td>f3</td>
+      <td>FLOAT</td>
+   </tr>
+   <tr>
+      <td>7</td>
+      <td>f4</td>
+      <td>FLOAT</td>
+   </tr>
+   <tr>
+      <td>8</td>
+      <td>f5</td>
+      <td>FLOAT</td>
+   </tr>
+   <tr>
+      <td>9</td>
+      <td>f6</td>
+      <td>FLOAT</td>
+   </tr>
+   <tr>
+      <td>10</td>
+      <td>f7</td>
+      <td>FLOAT</td>
+   </tr>
+   <tr>
+      <td>11</td>
+      <td>f8</td>
+      <td>FLOAT</td>
+   </tr>
+   <tr>
+      <td>12</td>
+      <td>f9</td>
+      <td>FLOAT</td>
+   </tr>
+</table>
 
 准备好测试工具，下载 [Postman](https://www.postman.com/downloads/)。
 
