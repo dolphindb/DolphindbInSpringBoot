@@ -1,4 +1,4 @@
-# 基于 DolphinDB 搭建微服务中的 SpringBoot 项目
+# 基于DolphinDB搭建微服务的SpringBoot项目
 
 SpringBoot 是一个基于 Spring 的快速开发框架，也是 SpringCloud 构建微服务分布式系统的基础设施。本文主要介绍如何通过 SpringBoot 快速搭建 DolphinDB 微服务，并且基于 Mybatis 操作 DolphinDB 数据库。
 
